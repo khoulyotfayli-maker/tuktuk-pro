@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101010"><title>TukTuk Pro V4</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f6f8;color:#141414;font-family:Arial,Tahoma,sans-serif}
+.wrap{max-width:940px;margin:auto;padding:0 16px}header{background:#101010;color:#fff;padding:24px 0 28px;border-radius:0 0 30px 30px}
+.brand{display:flex;align-items:center;justify-content:space-between}.brand h1{margin:0;font-size:29px}.brand p{margin:7px 0 0;color:#aaa;font-size:13px}.logo{font-size:42px}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.card{background:#fff;border-radius:20px;padding:17px;box-shadow:0 5px 18px #0000000b}.card .lab{color:#777;font-size:13px}.num{font-size:26px;font-weight:800;margin-top:7px}.profit{color:#087a3b}.loss{color:#b00020}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}.quick button{padding:16px;border:0;border-radius:17px;font-size:16px;font-weight:800}.income{background:#111;color:#fff}.expense{background:#e9eaed;color:#111}
+.tabs{display:flex;gap:7px;overflow:auto;margin:10px 0}.tab{white-space:nowrap;border:0;background:#fff;padding:11px 15px;border-radius:13px;font-weight:700}.tab.on{background:#111;color:#fff}
+.page{display:none}.page.on{display:block}h2{font-size:20px;margin:19px 0 10px}.box{background:#fff;border-radius:20px;padding:16px;box-shadow:0 4px 16px #0000000a;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}input,select{width:100%;padding:13px;border:1px solid #ddd;border-radius:12px;font-size:15px;margin-bottom:8px;background:#fff}
+button{cursor:pointer;border:0;border-radius:12px;padding:11px 14px;font-weight:700}.black{background:#111;color:#fff}.gray{background:#eee}.danger{background:#f6e8e8;color:#a00000}
+.person{background:#fff;border-radius:18px;padding:15px;margin:9px 0;box-shadow:0 3px 13px #00000008}.top{display:flex;justify-content:space-between;gap:10px}.person b{font-size:17px}.muted{color:#777;font-size:12px;margin-top:5px}.pill{padding:5px 9px;border-radius:20px;background:#eee;height:max-content;font-size:11px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee}.row:last-child{border:0}.empty{text-align:center;color:#888;padding:20px}.small{font-size:12px;color:#777}
+.chart{display:flex;align-items:end;gap:7px;height:150px;padding:12px 3px 0;border-bottom:1px solid #ddd}.bar{flex:1;background:#222;border-radius:8px 8px 0 0;min-height:4px;position:relative}.bar span{position:absolute;bottom:-24px;width:100%;text-align:center;font-size:10px;color:#777}
+nav{position:sticky;bottom:7px;background:#fff;border-radius:20px;padding:9px;display:flex;justify-content:space-around;box-shadow:0 3px 20px #0002;margin:20px 0 8px}nav button{background:none;padding:6px 10px}.ico{font-size:20px;display:block}
+@media(min-width:700px){.summary{grid-template-columns:repeat(4,1fr)}}
+</style></head>
+<body>
+<header><div class="wrap"><div class="brand"><div><h1>TukTuk Pro</h1><p>لوحة تحكم شغلك — بسرعة ووضوح</p></div><div class="logo">🛺</div></div></div></header>
+<main class="wrap">
+<section class="summary">
+<div class="card"><div class="lab">دخل اليوم</div><div class="num" id="incomeDay">$0</div></div>
+<div class="card"><div class="lab">مصاريف اليوم</div><div class="num" id="expenseDay">$0</div></div>
+<div class="card"><div class="lab">صافي اليوم</div><div class="num" id="netDay">$0</div></div>
+<div class="card"><div class="lab">دخل الشهر</div><div class="num" id="incomeMonth">$0</div></div>
+</section>
+
+<div class="quick"><button class="income" onclick="openForm('income')">＋ دخل سريع</button><button class="expense" onclick="openForm('expense')">＋ مصروف سريع</button></div>
+
+<div class="tabs">
+<button class="tab on" onclick="page('home',this)">الرئيسية</button>
+<button class="tab" onclick="page('people',this)">👥 الموظفين</button>
+<button class="tab" onclick="page('expenses',this)">⛽ المصاريف</button>
+<button class="tab" onclick="page('reports',this)">📊 التقارير</button>
+</div>
+
+<section id="home" class="page on">
+<h2>⚡ تسجيل عملية</h2>
+<div class="box">
+<input id="txName" placeholder="اسم الموظف / الزبون / وصف">
+<div class="grid"><input id="txAmount" type="number" step=".01" placeholder="المبلغ $"><input id="txTime" type="time"></div>
+<select id="txType"><option value="income">💰 دخل / قبض</option><option value="debt">🧾 دين</option><option value="expense">⛽ مصروف</option></select>
+<button class="black" onclick="addTx()">حفظ العملية</button>
+</div>
+<h2>🕘 آخر العمليات</h2><div id="latest"></div>
+</section>
+
+<section id="people" class="page">
+<h2>👥 الموظفين</h2>
+<div class="box">
+<input id="pName" placeholder="اسم الموظف">
+<div class="grid"><input id="pStart" type="time"><input id="pEnd" type="time"></div>
+<input id="pFee" type="number" step=".01" placeholder="الأجرة الشهرية $ (اختياري)">
+<button class="black" onclick="addPerson()">＋ إضافة موظف</button>
+</div>
+<div id="peopleList"></div>
+</section>
+
+<section id="expenses" class="page"><h2>⛽ مصاريف الشهر</h2><div id="expensesList"></div></section>
+
+<section id="reports" class="page">
+<h2>📊 التقرير</h2>
+<div class="box">
+<div class="row"><span>دخل الشهر</span><b id="ri">$0</b></div><div class="row"><span>مصاريف الشهر</span><b id="re">$0</b></div><div class="row"><span>الربح الصافي</span><b id="rn">$0</b></div><div class="row"><span>إجمالي الديون</span><b id="rd">$0</b></div><div class="row"><span>المقبوض من الديون</span><b id="rp">$0</b></div><div class="row"><span>المتبقي</span><b id="rb">$0</b></div>
+</div>
+<h2>📈 آخر 7 أيام</h2><div class="box"><div id="chart" class="chart"></div></div>
+<div class="box"><button class="black" onclick="backup()">💾 نسخ احتياطي</button> <button class="gray" onclick="clearAll()">مسح البيانات</button><p class="small">البيانات محفوظة على هذا المتصفح.</p></div>
+</section>
+
+<nav><button onclick="page('home')"><span class="ico">🏠</span>الرئيسية</button><button onclick="page('people')"><span class="ico">👥</span>الموظفين</button><button onclick="page('expenses')"><span class="ico">💸</span>المصاريف</button><button onclick="page('reports')"><span class="ico">📊</span>التقارير</button></nav>
+</main>
+
+<script>
+const KEY='tuktuk_pro_v4';let db=JSON.parse(localStorage.getItem(KEY)||'{"people":[],"tx":[]}');
+const $=x=>document.getElementById(x), day=()=>new Date().toISOString().slice(0,10), mon=()=>day().slice(0,7), money=n=>'$'+Number(n||0).toFixed(2);
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function page(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));$(id).classList.add('on');if(btn){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));btn.classList.add('on')}scrollTo(0,0)}
+function openForm(type){page('home');$('txType').value=type;$('txAmount').focus()}
+function addTx(){
+ let name=$('txName').value.trim()|| ( $('txType').value==='expense'?'مصروف':'دخل اليوم'), amount=Number($('txAmount').value);
+ if(!amount)return alert('حط المبلغ');
+ db.tx.unshift({id:Date.now(),name,amount,type:$('txType').value,date:day(),month:mon(),time:$('txTime').value||new Date().toTimeString().slice(0,5)});
+ $('txName').value='';$('txAmount').value='';$('txTime').value='';save()
+}
+function addPerson(){
+ let name=$('pName').value.trim();if(!name)return alert('حط اسم الموظف');
+ if(db.people.some(p=>p.name===name))return alert('الموظف موجود');
+ db.people.push({name,start:$('pStart').value,end:$('pEnd').value,fee:Number($('pFee').value)||0});
+ $('pName').value='';$('pStart').value='';$('pEnd').value='';$('pFee').value='';save()
+}
+function pay(name){let a=prompt('المبلغ المقبوض من '+name);if(a&&Number(a))add(name,Number(a),'income')}
+function debt(name){let a=prompt('المبلغ الذي نضيفه كدين على '+name);if(a&&Number(a))add(name,Number(a),'debt')}
+function add(name,amount,type){db.tx.unshift({id:Date.now(),name,amount,type,date:day(),month:mon(),time:new Date().toTimeString().slice(0,5)});save()}
+function del(id){db.tx=db.tx.filter(t=>t.id!==id);save()}
+function delPerson(name){if(confirm('حذف الموظف؟')){db.people=db.people.filter(p=>p.name!==name);save()}}
+function txHtml(t){let l=t.type==='income'?'قبض':t.type==='debt'?'دين':'مصروف',s=t.type==='expense'?'-':'+';return `<div class="person"><div><b>${esc(t.name)}</b><div class="muted">${l} • ${t.date} • ${t.time}</div></div><div><b class="${t.type==='expense'?'loss':'profit'}">${s}${money(t.amount)}</b><button class="danger" onclick="del(${t.id})">×</button></div></div>`}
+function render(){
+ let di=0,de=0,mi=0,me=0,debt=0,paid=0;
+ db.tx.forEach(t=>{if(t.type==='income'){if(t.date===day())di+=t.amount;if(t.month===mon())mi+=t.amount}if(t.type==='expense'){if(t.date===day())de+=t.amount;if(t.month===mon())me+=t.amount}if(t.type==='debt')debt+=t.amount});
+ db.tx.forEach(t=>{if(t.type==='income'&&db.people.some(p=>p.name===t.name))paid+=t.amount});
+ $('incomeDay').textContent=money(di);$('expenseDay').textContent=money(de);$('netDay').textContent=money(di-de);$('netDay').className='num '+(di-de<0?'loss':'profit');$('incomeMonth').textContent=money(mi);
+ $('ri').textContent=money(mi);$('re').textContent=money(me);$('rn').textContent=money(mi-me);$('rn').className=mi-me<0?'loss':'profit';$('rd').textContent=money(debt);$('rp').textContent=money(paid);$('rb').textContent=money(Math.max(0,debt-paid));
+ $('latest').innerHTML=db.tx.length?db.tx.slice(0,12).map(txHtml).join(''):'<div class="box empty">ما في عمليات بعد</div>';
+ $('expensesList').innerHTML=db.tx.filter(t=>t.type==='expense'&&t.month===mon()).map(txHtml).join('')||'<div class="box empty">ما في مصاريف هذا الشهر</div>';
+ $('peopleList').innerHTML=db.people.length?db.people.map(p=>{let d=db.tx.filter(t=>t.name===p.name&&t.type==='debt').reduce((a,t)=>a+t.amount,0),q=db.tx.filter(t=>t.name===p.name&&t.type==='income').reduce((a,t)=>a+t.amount,0),b=Math.max(0,d-q);return `<div class="person"><div class="top"><div><b>${esc(p.name)}</b><div class="muted">⏰ ${p.start||'--'} → ${p.end||'--'} ${p.fee?'• شهري '+money(p.fee):''}</div><div class="muted">دين ${money(d)} • مقبوض ${money(q)} • <b>متبقي ${money(b)}</b></div></div><span class="pill">${b?'عليه دين':'مسدد'}</span></div><div class="actions"><button class="black" onclick="pay('${attr(p.name)}')">💵 قبض</button><button class="gray" onclick="debt('${attr(p.name)}')">🧾 دين</button><button class="danger" onclick="delPerson('${attr(p.name)}')">حذف</button></div></div>`}).join(''):'<div class="box empty">أضف أول موظف</div>';
+ let vals=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let k=d.toISOString().slice(0,10),v=db.tx.filter(t=>t.date===k&&t.type==='income').reduce((a,t)=>a+t.amount,0);vals.push({k,v})}let mx=Math.max(1,...vals.map(x=>x.v));$('chart').innerHTML=vals.map(x=>`<div class="bar" style="height:${Math.max(5,x.v/mx*100)}%"><span>${x.k.slice(5)}</span></div>`).join('')
+}
+function backup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.download='tuktuk-backup.json';a.click()}
+function clearAll(){if(confirm('أكيد تمسح كل البيانات؟')){db={people:[],tx:[]};save()}}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function attr(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
+render();
+</script></body></html>
