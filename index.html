@@ -97,7 +97,39 @@ function debt(name){let a=prompt('المبلغ الذي نضيفه كدين عل
 function add(name,amount,type){db.tx.unshift({id:Date.now(),name,amount,type,date:day(),month:mon(),time:new Date().toTimeString().slice(0,5)});save()}
 function del(id){db.tx=db.tx.filter(t=>t.id!==id);save()}
 function delPerson(name){if(confirm('حذف الموظف؟')){db.people=db.people.filter(p=>p.name!==name);save()}}
-function txHtml(t){let l=t.type==='income'?'قبض':t.type==='debt'?'دين':'مصروف',s=t.type==='expense'?'-':'+';return `<div class="person"><div><b>${esc(t.name)}</b><div class="muted">${l} • ${t.date} • ${t.time}</div></div><div><b class="${t.type==='expense'?'loss':'profit'}">${s}${money(t.amount)}</b><button class="danger" onclick="del(${t.id})">×</button></div></div>`}
+function txHtml(t){let l=t.type==='income'?'قبض':t.type==='debt'?'دين':'مصروف',s=t.type==='expense'?'-':'+';return `<div class="person"><div><b>${esc(t.name)}</b><div class="muted">${l} • ${t.date} • ${t.time}</div></div><div><b class="${t.type==='expense'?'loss':'profit'}">${s}${money(t.amount)}</b><button class="danger" onclick="del(${t.id})">×</button></div></div>`}function monthlyReport(){
+  let months={};
+
+  db.tx.forEach(t=>{
+    if(t.type!=='income' && t.type!=='expense') return;
+
+    let m=t.month;
+    if(!months[m]) months[m]={income:0,expense:0};
+
+    if(t.type==='income') months[m].income+=t.amount;
+    if(t.type==='expense') months[m].expense+=t.amount;
+  });
+
+  let html='<div class="box"><h2>📊 التقرير الشهري</h2>';
+
+  Object.keys(months).sort((a,b)=>b-a).forEach(m=>{
+    let x=months[m];
+    let net=x.income-x.expense;
+
+    html+=`
+      <div class="person">
+        <div><b>شهر ${m}</b></div>
+        <div>الدخل: ${money(x.income)}</div>
+        <div>المصاريف: ${money(x.expense)}</div>
+        <div><b>صافي الربح: ${money(net)}</b></div>
+      </div>`;
+  });
+
+  html+='</div>';
+
+  let r=document.getElementById('reports');
+  if(r) r.innerHTML=html;
+}
 function render(){
  let di=0,de=0,mi=0,me=0,debt=0,paid=0;
  db.tx.forEach(t=>{if(t.type==='income'){if(t.date===day())di+=t.amount;if(t.month===mon())mi+=t.amount}if(t.type==='expense'){if(t.date===day())de+=t.amount;if(t.month===mon())me+=t.amount}if(t.type==='debt')debt+=t.amount});
