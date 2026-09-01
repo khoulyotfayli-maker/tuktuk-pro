@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0f1115">
+<title>TukTuk Pro V5</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f4f6f8;color:#15171b;font-family:Arial,Tahoma,sans-serif}
+.wrap{max-width:980px;margin:auto;padding:0 16px}
+header{background:linear-gradient(135deg,#0b0d10,#1b1f26);color:#fff;padding:24px 0 26px;border-radius:0 0 30px 30px;box-shadow:0 8px 30px #0002}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand h1{margin:0;font-size:30px;letter-spacing:.2px}
+.brand p{margin:7px 0 0;color:#b9bec7;font-size:13px}
+.logo{font-size:48px}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.card{background:#fff;border-radius:20px;padding:16px;box-shadow:0 7px 24px #0000000a;border:1px solid #eef0f3}
+.lab{color:#777;font-size:12px}.num{font-size:24px;font-weight:900;margin-top:7px}
+.profit{color:#087a3b}.loss{color:#b00020}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+.quick button{padding:16px;border:0;border-radius:17px;font-size:16px;font-weight:900;box-shadow:0 5px 15px #00000010}
+.income{background:#111;color:#fff}.expense{background:#e8eaee;color:#111}
+.tabs{display:flex;gap:7px;overflow:auto;margin:10px 0 14px;padding-bottom:2px}
+.tab{white-space:nowrap;border:0;background:#fff;padding:11px 15px;border-radius:13px;font-weight:800;box-shadow:0 2px 9px #00000008}
+.tab.on{background:#111;color:#fff}
+.page{display:none}.page.on{display:block}
+h2{font-size:20px;margin:18px 0 10px}
+.box{background:#fff;border-radius:20px;padding:16px;box-shadow:0 5px 18px #00000009;margin-bottom:12px;border:1px solid #eef0f3}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+input,select{width:100%;padding:13px;border:1px solid #ddd;border-radius:12px;font-size:15px;margin-bottom:8px;background:#fff}
+button{cursor:pointer;border:0;border-radius:12px;padding:11px 14px;font-weight:800}
+.black{background:#111;color:#fff}.gray{background:#eee;color:#111}.danger{background:#f7e7e7;color:#a00000}
+.person{background:#fff;border-radius:18px;padding:15px;margin:9px 0;box-shadow:0 3px 13px #00000008;border:1px solid #eef0f3}
+.top{display:flex;justify-content:space-between;gap:10px}.person b{font-size:17px}
+.muted{color:#777;font-size:12px;margin-top:5px}.pill{padding:5px 9px;border-radius:20px;background:#eee;height:max-content;font-size:11px}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.row{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee}
+.row:last-child{border:0}.empty{text-align:center;color:#888;padding:20px}.small{font-size:12px;color:#777}
+.report-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.report-title{font-size:18px;font-weight:900}
+.month-card{border:1px solid #e8eaee;border-radius:17px;padding:15px;margin:10px 0;background:#fafbfc}
+.month-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.month-name{font-size:17px;font-weight:900}.net{font-weight:900}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.stat{background:#fff;border-radius:13px;padding:10px}.stat span{display:block;color:#777;font-size:11px;margin-bottom:4px}.stat b{font-size:15px}
+.total-box{background:#111;color:#fff;border-radius:18px;padding:16px;margin-bottom:12px}
+.total-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.total-grid div{background:#ffffff12;border-radius:12px;padding:10px}.total-grid span{display:block;color:#bfc4cc;font-size:11px}.total-grid b{font-size:16px}
+.filter{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.badge{font-size:11px;background:#eef0f3;padding:5px 8px;border-radius:20px}
+footer{height:10px}
+nav{position:sticky;bottom:7px;background:#fff;border-radius:20px;padding:9px;display:flex;justify-content:space-around;box-shadow:0 3px 20px #0002;margin:20px 0 8px;z-index:5}
+nav button{background:none;padding:6px 10px}.ico{font-size:20px;display:block}
+@media(min-width:700px){.summary{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand">
+    <div><h1>TukTuk Pro</h1><p>لوحة تحكم شغلك — مرتبة وسهلة وواضحة</p></div>
+    <div class="logo">🛺</div>
+  </div>
+  <div class="summary">
+    <div class="card"><div class="lab">دخل اليوم</div><div class="num" id="incomeDay">$0.00</div></div>
+    <div class="card"><div class="lab">مصاريف اليوم</div><div class="num" id="expenseDay">$0.00</div></div>
+    <div class="card"><div class="lab">صافي اليوم</div><div class="num" id="netDay">$0.00</div></div>
+    <div class="card"><div class="lab">دخل الشهر</div><div class="num" id="incomeMonth">$0.00</div></div>
+  </div>
+</div></header>
+
+<main class="wrap">
+<div class="quick">
+  <button class="income" onclick="openForm('income')">＋ دخل سريع</button>
+  <button class="expense" onclick="openForm('expense')">＋ مصروف سريع</button>
+</div>
+
+<div class="tabs">
+<button class="tab on" onclick="page('home',this)">الرئيسية</button>
+<button class="tab" onclick="page('people',this)">👥 الموظفين</button>
+<button class="tab" onclick="page('expenses',this)">⛽ المصاريف</button>
+<button class="tab" onclick="page('reports',this)">📊 التقارير</button>
+</div>
+
+<section id="home" class="page on">
+<h2>⚡ تسجيل عملية</h2>
+<div class="box">
+<input id="txName" placeholder="اسم الموظف / الزبون / وصف">
+<div class="grid"><input id="txAmount" type="number" step=".01" placeholder="المبلغ $"><input id="txTime" type="time"></div>
+<select id="txType"><option value="income">💰 دخل / قبض</option><option value="debt">🧾 دين</option><option value="expense">⛽ مصروف</option></select>
+<button class="black" onclick="addTx()">حفظ العملية</button>
+</div>
+<h2>🕘 آخر العمليات</h2><div id="latest"></div>
+</section>
+
+<section id="people" class="page">
+<h2>👥 الموظفين</h2>
+<div class="box">
+<input id="pName" placeholder="اسم الموظف">
+<div class="grid"><input id="pStart" type="time"><input id="pEnd" type="time"></div>
+<input id="pFee" type="number" step=".01" placeholder="الأجرة الشهرية $ (اختياري)">
+<button class="black" onclick="addPerson()">＋ إضافة موظف</button>
+</div>
+<div id="peopleList"></div>
+</section>
+
+<section id="expenses" class="page">
+<h2>⛽ مصاريف الشهر</h2>
+<div id="expensesList"></div>
+</section>
+
+<section id="reports" class="page">
+<h2>📊 التقرير الشهري الكامل</h2>
+<div class="total-box">
+  <div class="report-title">ملخص كل الشهور</div>
+  <div class="small" style="color:#bfc4cc;margin-top:5px">الدخل − المصاريف = صافي الربح</div>
+  <div class="total-grid">
+    <div><span>إجمالي الدخل</span><b id="allIncome">$0.00</b></div>
+    <div><span>إجمالي المصاريف</span><b id="allExpense">$0.00</b></div>
+    <div><span>إجمالي الربح</span><b id="allNet">$0.00</b></div>
+  </div>
+</div>
+<div class="box">
+  <div class="filter">
+    <select id="reportMonth" onchange="renderReports()"><option value="all">كل الشهور</option></select>
+    <button class="gray" onclick="exportReport()">📄 تصدير التقرير</button>
+  </div>
+</div>
+<div id="monthlyReport"></div>
+<div class="box">
+  <button class="black" onclick="backup()">💾 نسخ احتياطي</button>
+  <button class="gray" onclick="clearAll()">مسح البيانات</button>
+  <p class="small">البيانات محفوظة على هذا المتصفح.</p>
+</div>
+</section>
+
+<nav>
+<button onclick="page('home')"><span class="ico">🏠</span>الرئيسية</button>
+<button onclick="page('people')"><span class="ico">👥</span>الموظفين</button>
+<button onclick="page('expenses')"><span class="ico">💸</span>المصاريف</button>
+<button onclick="page('reports')"><span class="ico">📊</span>التقارير</button>
+</nav>
+<footer></footer>
+</main>
+
+<script>
+const KEY='tuktuk_pro_v4';
+let db=JSON.parse(localStorage.getItem(KEY)||'{"people":[],"tx":[]}');
+const $=x=>document.getElementById(x);
+const day=()=>new Date().toISOString().slice(0,10);
+const mon=()=>day().slice(0,7);
+const money=n=>'$'+Number(n||0).toFixed(2);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const attr=s=>String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function page(id,btn){
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+ $(id).classList.add('on');
+ if(btn){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));btn.classList.add('on')}
+ scrollTo(0,0);
+}
+function openForm(type){page('home');$('txType').value=type;$('txAmount').focus()}
+function addTx(){
+ let type=$('txType').value;
+ let name=$('txName').value.trim()||(type==='expense'?'مصروف':'دخل اليوم');
+ let amount=Number($('txAmount').value);
+ if(!amount)return alert('حط المبلغ');
+ db.tx.unshift({id:Date.now(),name,amount,type,date:day(),month:mon(),time:$('txTime').value||new Date().toTimeString().slice(0,5)});
+ $('txName').value='';$('txAmount').value='';$('txTime').value='';save()
+}
+function addPerson(){
+ let name=$('pName').value.trim();if(!name)return alert('حط اسم الموظف');
+ if(db.people.some(p=>p.name===name))return alert('الموظف موجود');
+ db.people.push({name,start:$('pStart').value,end:$('pEnd').value,fee:Number($('pFee').value)||0});
+ $('pName').value='';$('pStart').value='';$('pEnd').value='';$('pFee').value='';save()
+}
+function add(name,amount,type){db.tx.unshift({id:Date.now(),name,amount,type,date:day(),month:mon(),time:new Date().toTimeString().slice(0,5)});save()}
+function pay(name){let a=prompt('المبلغ المقبوض من '+name);if(a&&Number(a))add(name,Number(a),'income')}
+function debt(name){let a=prompt('المبلغ الذي نضيفه كدين على '+name);if(a&&Number(a))add(name,Number(a),'debt')}
+function del(id){db.tx=db.tx.filter(t=>t.id!==id);save()}
+function delPerson(name){if(confirm('حذف الموظف؟')){db.people=db.people.filter(p=>p.name!==name);save()}}
+
+function txHtml(t){
+ let l=t.type==='income'?'قبض':t.type==='debt'?'دين':'مصروف',s=t.type==='expense'?'-':'+';
+ return `<div class="person"><div class="top"><div><b>${esc(t.name)}</b><div class="muted">${l} • ${t.date} • ${t.time}</div></div><div><b class="${t.type==='expense'?'loss':'profit'}">${s}${money(t.amount)}</b><br><button class="danger" onclick="del(${t.id})">حذف</button></div></div></div>`
+}
+
+function monthlyData(){
+ let months={};
+ db.tx.forEach(t=>{
+  if(!months[t.month])months[t.month]={income:0,expense:0,debt:0};
+  if(t.type==='income')months[t.month].income+=Number(t.amount);
+  if(t.type==='expense')months[t.month].expense+=Number(t.amount);
+  if(t.type==='debt')months[t.month].debt+=Number(t.amount);
+ });
+ return months;
+}
+function monthLabel(m){
+ let [y,mo]=m.split('-');
+ let names=['','كانون الثاني','شباط','آذار','نيسان','أيار','حزيران','تموز','آب','أيلول','تشرين الأول','تشرين الثاني','كانون الأول'];
+ return names[Number(mo)]+' '+y;
+}
+function renderReports(){
+ let months=monthlyData(), keys=Object.keys(months).sort((a,b)=>b.localeCompare(a));
+ let selected=$('reportMonth').value;
+ let html='';
+ let allI=0,allE=0;
+ keys.forEach(k=>{allI+=months[k].income;allE+=months[k].expense});
+ $('allIncome').textContent=money(allI);$('allExpense').textContent=money(allE);$('allNet').textContent=money(allI-allE);
+ if(selected!=='all')keys=keys.filter(k=>k===selected);
+ if(!keys.length){$('monthlyReport').innerHTML='<div class="box empty">ما في بيانات شهرية بعد.</div>';return}
+ html=keys.map(k=>{
+  let x=months[k],net=x.income-x.expense;
+  return `<div class="month-card">
+   <div class="month-top"><div class="month-name">📅 ${monthLabel(k)}</div><div class="net ${net<0?'loss':'profit'}">صافي ${money(net)}</div></div>
+   <div class="stats">
+    <div class="stat"><span>💰 الدخل</span><b class="profit">${money(x.income)}</b></div>
+    <div class="stat"><span>⛽ المصاريف</span><b class="loss">${money(x.expense)}</b></div>
+    <div class="stat"><span>🧾 الديون المضافة</span><b>${money(x.debt)}</b></div>
+   </div>
+  </div>`
+ }).join('');
+ $('monthlyReport').innerHTML=html;
+}
+function fillMonthFilter(){
+ let months=Object.keys(monthlyData()).sort((a,b)=>b.localeCompare(a)), old=$('reportMonth').value;
+ $('reportMonth').innerHTML='<option value="all">كل الشهور</option>'+months.map(m=>`<option value="${m}">${monthLabel(m)}</option>`).join('');
+ if(months.includes(old))$('reportMonth').value=old;
+}
+function render(){
+ let di=0,de=0,mi=0;
+ db.tx.forEach(t=>{
+  if(t.type==='income'){if(t.date===day())di+=t.amount;if(t.month===mon())mi+=t.amount}
+  if(t.type==='expense'&&t.date===day())de+=t.amount;
+ });
+ $('incomeDay').textContent=money(di);$('expenseDay').textContent=money(de);$('netDay').textContent=money(di-de);
+ $('netDay').className='num '+(di-de<0?'loss':'profit');$('incomeMonth').textContent=money(mi);
+ $('latest').innerHTML=db.tx.length?db.tx.slice(0,12).map(txHtml).join(''):'<div class="box empty">ما في عمليات بعد</div>';
+ $('expensesList').innerHTML=db.tx.filter(t=>t.type==='expense'&&t.month===mon()).map(txHtml).join('')||'<div class="box empty">ما في مصاريف هذا الشهر</div>';
+ $('peopleList').innerHTML=db.people.length?db.people.map(p=>{
+  let d=db.tx.filter(t=>t.name===p.name&&t.type==='debt').reduce((a,t)=>a+t.amount,0);
+  let q=db.tx.filter(t=>t.name===p.name&&t.type==='income').reduce((a,t)=>a+t.amount,0);
+  let b=Math.max(0,d-q);
+  return `<div class="person"><div class="top"><div><b>${esc(p.name)}</b><div class="muted">⏰ ${p.start||'--'} → ${p.end||'--'} ${p.fee?'• شهري '+money(p.fee):''}</div><div class="muted">دين ${money(d)} • مقبوض ${money(q)} • <b>متبقي ${money(b)}</b></div></div><span class="pill">${b?'عليه دين':'مسدد'}</span></div><div class="actions"><button class="black" onclick="pay('${attr(p.name)}')">💵 قبض</button><button class="gray" onclick="debt('${attr(p.name)}')">🧾 دين</button><button class="danger" onclick="delPerson('${attr(p.name)}')">حذف</button></div></div>`
+ }).join(''):'<div class="box empty">أضف أول موظف</div>';
+ fillMonthFilter();renderReports();
+}
+function backup(){
+ let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.download='tuktuk-backup.json';a.click()
+}
+function exportReport(){
+ let months=monthlyData(),keys=Object.keys(months).sort((a,b)=>b.localeCompare(a));
+ let lines=['TukTuk Pro - التقرير الشهري',''];
+ keys.forEach(k=>{let x=months[k];lines.push(`${monthLabel(k)} | الدخل: ${money(x.income)} | المصاريف: ${money(x.expense)} | صافي الربح: ${money(x.income-x.expense)} | الديون: ${money(x.debt)}`)});
+ let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'}));a.download='tuktuk-monthly-report.txt';a.click()
+}
+function clearAll(){if(confirm('أكيد تمسح كل البيانات؟')){db={people:[],tx:[]};save()}}
+render();
+</script>
+</body>
+</html>
