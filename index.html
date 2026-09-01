@@ -130,7 +130,7 @@ function txHtml(t){let l=t.type==='income'?'قبض':t.type==='debt'?'دين':'م
   let r=document.getElementById('reports');
   if(r) r.innerHTML=html;
 }
-function render(){
+function render(){monthlyReport();
  let di=0,de=0,mi=0,me=0,debt=0,paid=0;
  db.tx.forEach(t=>{if(t.type==='income'){if(t.date===day())di+=t.amount;if(t.month===mon())mi+=t.amount}if(t.type==='expense'){if(t.date===day())de+=t.amount;if(t.month===mon())me+=t.amount}if(t.type==='debt')debt+=t.amount});
  db.tx.forEach(t=>{if(t.type==='income'&&db.people.some(p=>p.name===t.name))paid+=t.amount});
